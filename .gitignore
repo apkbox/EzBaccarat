@@ -1,0 +1,8 @@
+/.vs/
+/EzBaccarat/obj/
+/EzBaccarat/bin/
+/EzBaccaratModel/bin/
+/EzBaccaratModel/obj/
+/EzBaccaratTest/bin/
+/EzBaccaratTest/obj/
+*.user
