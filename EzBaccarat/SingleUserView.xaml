@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="EzBaccarat.TableView"
+﻿<UserControl x:Class="EzBaccarat.SingleUserView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -8,9 +8,19 @@
              xmlns:conv="clr-namespace:Shadows.Core.Converters"
              xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
              mc:Ignorable="d"
-             d:DesignHeight="800" d:DesignWidth="1280">
+             d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance Type=local:TableViewModel, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <conv:BoolToObjectConverter x:Key="WinToCardOffsetConverter" TrueValue="50" FalseValue="0"/>
+
+        <collections:Hashtable x:Key="ChipImages">
+            <ImageSource x:Key="1">Images/chips/1.png</ImageSource>
+            <ImageSource x:Key="5">Images/chips/5.png</ImageSource>
+            <ImageSource x:Key="25">Images/chips/25.png</ImageSource>
+            <ImageSource x:Key="100">Images/chips/100.png</ImageSource>
+            <ImageSource x:Key="500">Images/chips/500.png</ImageSource>
+            <ImageSource x:Key="1000">Images/chips/1000.png</ImageSource>
+        </collections:Hashtable>
 
         <collections:Hashtable x:Key="CardImages">
             <ImageSource x:Key="AC">Images/cards/AC.png</ImageSource>
@@ -71,10 +81,20 @@
         </collections:Hashtable>
     </UserControl.Resources>
 
-    <Grid Background="#FF0B4432" Height="758" Width="1200" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Image Source="Images/table_full.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+    <Grid Background="#FF0B4432" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
 
-        <Grid Margin="0,86,616,0" HorizontalAlignment="Right" VerticalAlignment="Top">
+        <TextBlock Text="Player" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="Red" FontSize="50"/>
+        <Grid x:Name="PlayerHand" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,0,100">
             <Grid.RenderTransform>
                 <TransformGroup>
                     <TranslateTransform Y="{Binding PlayerWin, Converter={StaticResource WinToCardOffsetConverter}}"/>
@@ -103,7 +123,8 @@
                    RenderOptions.BitmapScalingMode="HighQuality" Width="60" Grid.Column="4"/>
         </Grid>
 
-        <Grid x:Name="BankerHand" HorizontalAlignment="Left" Margin="612,86,0,0" VerticalAlignment="Top">
+        <TextBlock Text="Banker" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Yellow" FontSize="50" Grid.Column="2"/>
+        <Grid x:Name="BankerHand" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="2" Margin="0,10,0,100">
             <Grid.RenderTransform>
                 <TransformGroup>
                     <TranslateTransform Y="{Binding BankerWin, Converter={StaticResource WinToCardOffsetConverter}}"/>
@@ -131,53 +152,51 @@
                 </Image.LayoutTransform>
             </Image>
         </Grid>
-        <Image Source="Images/chips/1.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="894,-114,281,114" Visibility="Hidden"/>
-        <Image Source="Images/chips/5.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="948,-106,227,106"  Visibility="Hidden"/>
 
-        <Image Source="Images/chips/25.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="827,-101,348,101"  Visibility="Hidden"/>
-        <Image Source="Images/chips/100.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="843,-120,332,120" Visibility="Hidden"/>
-        <Image Source="Images/chips/500.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="859,-146,316,146" Visibility="Hidden"/>
+        <Grid Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="100"/>
+            </Grid.ColumnDefinitions>
 
-        <Image Source="Images/chips/1.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="819,-33,356,33"  Visibility="Hidden"/>
-        <Image Source="Images/chips/5.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="865,-6,310,6"   Visibility="Hidden"/>
+            <TextBlock Text="P8" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Blue" FontSize="40"/>
+            <Image Source="{core:DictionaryLookup {Binding PandaBetChips}, ResourceKey=ChipImages}"
+                   RenderOptions.BitmapScalingMode="HighQuality" Width="30"/>
+            <TextBlock Text="{Binding PandaBet, StringFormat='${0}'}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="10"/>
+            <Button Opacity="0" Command="{Binding PandaBetCommand}" Grid.Column="0" />
 
-        <Image Source="Images/chips/25.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="754,-47,421,47" Visibility="Hidden"/>
-        <Image Source="Images/chips/100.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="779,-62,396,62" Visibility="Hidden"/>
-        <Image Source="Images/chips/500.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="803,-80,372,80" Visibility="Hidden"/>
+            <TextBlock Text="TIE" Grid.Column="1"  HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Gray" FontSize="40"/>
+            <Image Source="{core:DictionaryLookup {Binding TieBetChips}, ResourceKey=ChipImages}"
+                   RenderOptions.BitmapScalingMode="HighQuality" Width="30"  Grid.Column="1"/>
+            <TextBlock Text="{Binding TieBet, StringFormat='${0}'}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="10" Grid.Column="1"/>
+            <Button Opacity="0" Command="{Binding TieBetCommand}" Grid.Column="1" />
 
-        <Image Source="Images/chips/1.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="711,15,464,-15" Visibility="Hidden"/>
-        <Image Source="Images/chips/5.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="737,60,438,-60" Visibility="Hidden"/>
+            <TextBlock Text="D7" Grid.Column="2"  HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Yellow" FontSize="40"/>
+            <Image Source="{core:DictionaryLookup {Binding DragonBetChips}, ResourceKey=ChipImages}"
+                   RenderOptions.BitmapScalingMode="HighQuality" Width="30"  Grid.Column="2"/>
+            <TextBlock Text="{Binding DragonBet, StringFormat='${0}'}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="10" Grid.Column="2"/>
+            <Button Opacity="0" Command="{Binding DragonBetCommand}" Grid.Column="2" />
 
-        <Image Source="Images/chips/25.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="661,-16,514,16" Visibility="Hidden"/>
-        <Image Source="Images/chips/100.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="692,-25,483,25" Visibility="Hidden" />
-        <Image Source="Images/chips/500.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="723,-33,452,33" Visibility="Hidden"/>
+            <TextBlock Text="Banker" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Yellow" FontSize="40"/>
+            <Image Source="{core:DictionaryLookup {Binding BankerBetChips}, ResourceKey=ChipImages}"
+                   RenderOptions.BitmapScalingMode="HighQuality" Width="30" Grid.Row="1" Grid.ColumnSpan="3"/>
+            <TextBlock Text="{Binding BankerBet, StringFormat='${0}'}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="10" Grid.Row="1"/>
+            <Button Opacity="0" Command="{Binding BankerBetCommand}" Grid.Row="1" Grid.ColumnSpan="3" />
 
-        <Image Source="Images/chips/1.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="589,33,586,-33"/>
-        <Image Source="Images/chips/5.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="593,83,582,-83"/>
+            <TextBlock Text="Player" Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" FontSize="40" />
+            <Image Source="{core:DictionaryLookup {Binding PlayerBetChips}, ResourceKey=ChipImages}"
+                   RenderOptions.BitmapScalingMode="HighQuality" Width="30" Grid.Row="2" Grid.ColumnSpan="3"/>
+            <TextBlock Text="{Binding PlayerBet, StringFormat='${0}'}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="10" Grid.Row="2"/>
+            <Button Opacity="0" Command="{Binding PlayerBetCommand}" Grid.Row="2" Grid.ColumnSpan="3" />
+        </Grid>
 
-        <Image Source="Images/chips/25.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="556,-11,619,11"/>
-        <Image Source="Images/chips/100.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="589,-11,586,11"/>
-        <Image Source="Images/chips/500.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="621,-11,554,11"/>
-
-        <Image Source="Images/chips/1.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="466,17,709,-17" Visibility="Hidden"/>
-        <Image Source="Images/chips/5.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="444,62,731,-62" Visibility="Hidden"/>
-
-        <Image Source="Images/chips/25.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="457,-32,718,32" Visibility="Hidden"/>
-        <Image Source="Images/chips/100.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="489,-23,686,23" Visibility="Hidden"/>
-        <Image Source="Images/chips/500.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="519,-16,656,16" Visibility="Hidden"/>
-
-        <Image Source="Images/chips/1.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="359,-35,816,35" Visibility="Hidden"/>
-        <Image Source="Images/chips/5.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="314,-2,861,2" Visibility="Hidden"/>
-
-        <Image Source="Images/chips/25.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="373,-78,802,78"  Visibility="Hidden"/>
-        <Image Source="Images/chips/100.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="399,-61,776,61"  Visibility="Hidden"/>
-        <Image Source="Images/chips/500.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="425,-46,750,46"  Visibility="Hidden"/>
-
-        <Image Source="Images/chips/1.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="286,-114,889,114"  Visibility="Hidden"/>
-        <Image Source="Images/chips/5.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="230,-107,945,107"  Visibility="Hidden"/>
-
-        <Image Source="Images/chips/25.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="320,-143,856,143"  Visibility="Hidden"/>
-        <Image Source="Images/chips/100.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="334,-119,841,119"  Visibility="Hidden"/>
-        <Image Source="Images/chips/500.png" RenderOptions.BitmapScalingMode="HighQuality" Width="25" Margin="351,-99,824,99"  Visibility="Hidden"/>
+        <TextBlock Text="{Binding PlayerBankRoll, StringFormat='${0}'}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White"/>
+        <Button Content="Deal" Command="{Binding DealCommand}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top"/>
     </Grid>
 </UserControl>

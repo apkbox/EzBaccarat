@@ -129,6 +129,11 @@ namespace EzBaccarat.Model
                     }
                 }
 
+                if (this.Dealer.IsPush)
+                {
+                    bet.Player.Put(bet.BankerBet);
+                }
+
                 if (this.Dealer.IsDragon7)
                 {
                     bet.Player.Put(bet.Dragon7Bet * 40);

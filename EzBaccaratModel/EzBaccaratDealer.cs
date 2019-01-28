@@ -136,7 +136,6 @@ namespace EzBaccarat.Model
                 {
                     this.IsDragon7 = true;
 
-                    // Push rule - noone wins
                     this.IsBankerWin = false;
                     this.IsPush = true;
                 }

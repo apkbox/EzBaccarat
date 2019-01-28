@@ -56,11 +56,17 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Core\BoolToObjectConverter.cs" />
+    <Compile Include="Core\DelegateCommand.cs" />
+    <Compile Include="Core\DelegateCommandBase.cs" />
+    <Compile Include="Core\DelegateCommandT.cs" />
     <Compile Include="Core\DictionaryLookupConverter.cs" />
     <Compile Include="Core\DictionaryLookupExtension.cs" />
     <Compile Include="Core\DynamicResourceReference.cs" />
     <Compile Include="Core\ResourceString.cs" />
     <Compile Include="Core\ResourceStringTypeConverter.cs" />
+    <Compile Include="SingleUserView.xaml.cs">
+      <DependentUpon>SingleUserView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TableView.xaml.cs">
       <DependentUpon>TableView.xaml</DependentUpon>
     </Compile>
@@ -77,6 +83,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SingleUserView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TableView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
