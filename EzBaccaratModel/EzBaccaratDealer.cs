@@ -29,11 +29,11 @@ namespace EzBaccarat.Model
 
         public bool IsTie { get; private set; }
 
-        public bool IsPush { get; private set; }
+        public bool IsBankerPush { get; private set; }
 
-        public bool IsPanda8 { get; private set; }
+        public bool IsPanda { get; private set; }
 
-        public bool IsDragon7 { get; private set; }
+        public bool IsDragon { get; private set; }
 
         public bool IsNatural { get; private set; }
 
@@ -58,10 +58,10 @@ namespace EzBaccarat.Model
             IsBankerWin = false;
             IsPlayerWin = false;
             IsTie = false;
-            IsPush = false;
+            IsBankerPush = false;
 
-            IsPanda8 = false;
-            IsDragon7 = false;
+            IsPanda = false;
+            IsDragon = false;
 
             IsNatural = false;
 
@@ -134,17 +134,17 @@ namespace EzBaccarat.Model
                 IsBankerWin = true;
                 if (BankerPoints == 7 && BankerHand.Count == 3)
                 {
-                    this.IsDragon7 = true;
+                    this.IsDragon = true;
 
                     this.IsBankerWin = false;
-                    this.IsPush = true;
+                    this.IsBankerPush = true;
                 }
             }
             else if (BankerPoints < PlayerPoints)
             {
                 IsPlayerWin = true;
                 if (PlayerPoints == 8 && PlayerHand.Count == 3)
-                    this.IsPanda8 = true;
+                    this.IsPanda = true;
             }
             else
             {

@@ -44,12 +44,15 @@
     <Compile Include="Card.cs" />
     <Compile Include="CardRank.cs" />
     <Compile Include="CardSuit.cs" />
+    <Compile Include="EzBaccaratBet.cs" />
     <Compile Include="EzBaccaratDealer.cs" />
-    <Compile Include="EzBaccaratPlayerBet.cs" />
+    <Compile Include="EzBaccaratPayout.cs" />
+    <Compile Include="EzBaccaratScoreboard.cs" />
     <Compile Include="EzBaccaratTable.cs" />
+    <Compile Include="EzBaccaratTableState.cs" />
     <Compile Include="FisherYatesShuffler.cs" />
     <Compile Include="French52Deck.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Gambler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shoe.cs" />
     <Compile Include="Shuffler.cs" />

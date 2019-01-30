@@ -93,7 +93,7 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <TextBlock Text="Player" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="Red" FontSize="50"/>
+        <TextBlock Text="PLAYER" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="Yellow" FontSize="50"/>
         <Grid x:Name="PlayerHand" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,0,100">
             <Grid.RenderTransform>
                 <TransformGroup>
@@ -123,7 +123,7 @@
                    RenderOptions.BitmapScalingMode="HighQuality" Width="60" Grid.Column="4"/>
         </Grid>
 
-        <TextBlock Text="Banker" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Yellow" FontSize="50" Grid.Column="2"/>
+        <TextBlock Text="BANKER" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Red" FontSize="50" Grid.Column="2"/>
         <Grid x:Name="BankerHand" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="2" Margin="0,10,0,100">
             <Grid.RenderTransform>
                 <TransformGroup>
@@ -165,38 +165,62 @@
                 <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="P8" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Blue" FontSize="40"/>
+            <Image Source="Images/panda8.png" RenderOptions.BitmapScalingMode="HighQuality"
+                   Margin="3" HorizontalAlignment="Center" VerticalAlignment="Center" />
             <Image Source="{core:DictionaryLookup {Binding PandaBetChips}, ResourceKey=ChipImages}"
                    RenderOptions.BitmapScalingMode="HighQuality" Width="30"/>
-            <TextBlock Text="{Binding PandaBet, StringFormat='${0}'}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="10"/>
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                <TextBlock Text="{Binding PandaBet, StringFormat='${0}'}" Foreground="White" FontSize="10"/>
+                <TextBlock Text="{Binding PandaPayout, StringFormat='${0}'}" Foreground="Red" FontSize="10"/>
+            </StackPanel>
             <Button Opacity="0" Command="{Binding PandaBetCommand}" Grid.Column="0" />
 
-            <TextBlock Text="TIE" Grid.Column="1"  HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Gray" FontSize="40"/>
+            <TextBlock Text="TIE" Grid.Column="1"  HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Gold" FontSize="40"/>
             <Image Source="{core:DictionaryLookup {Binding TieBetChips}, ResourceKey=ChipImages}"
                    RenderOptions.BitmapScalingMode="HighQuality" Width="30"  Grid.Column="1"/>
-            <TextBlock Text="{Binding TieBet, StringFormat='${0}'}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="10" Grid.Column="1"/>
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="1">
+                <TextBlock Text="{Binding TieBet, StringFormat='${0}'}" Foreground="White" FontSize="10" />
+                <TextBlock Text="{Binding TiePayout, StringFormat='${0}'}" Foreground="Red" FontSize="10"/>
+            </StackPanel>
             <Button Opacity="0" Command="{Binding TieBetCommand}" Grid.Column="1" />
 
-            <TextBlock Text="D7" Grid.Column="2"  HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Yellow" FontSize="40"/>
+            <Image Source="Images/dragon7.png" RenderOptions.BitmapScalingMode="HighQuality"
+                   Grid.Column="2" Margin="3" HorizontalAlignment="Center" VerticalAlignment="Center" />
             <Image Source="{core:DictionaryLookup {Binding DragonBetChips}, ResourceKey=ChipImages}"
                    RenderOptions.BitmapScalingMode="HighQuality" Width="30"  Grid.Column="2"/>
-            <TextBlock Text="{Binding DragonBet, StringFormat='${0}'}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="10" Grid.Column="2"/>
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="2">
+                <TextBlock Text="{Binding DragonBet, StringFormat='${0}'}" Foreground="White" FontSize="10"/>
+                <TextBlock Text="{Binding DragonPayout, StringFormat='${0}'}" Foreground="Red" FontSize="10"/>
+            </StackPanel>
             <Button Opacity="0" Command="{Binding DragonBetCommand}" Grid.Column="2" />
 
-            <TextBlock Text="Banker" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Yellow" FontSize="40"/>
+            <TextBlock Text="BANKER" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" FontSize="40"/>
             <Image Source="{core:DictionaryLookup {Binding BankerBetChips}, ResourceKey=ChipImages}"
                    RenderOptions.BitmapScalingMode="HighQuality" Width="30" Grid.Row="1" Grid.ColumnSpan="3"/>
-            <TextBlock Text="{Binding BankerBet, StringFormat='${0}'}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="10" Grid.Row="1"/>
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1">
+                <TextBlock Text="{Binding BankerBet, StringFormat='${0}'}" Foreground="White" FontSize="10" />
+                <TextBlock Text="{Binding BankerPayout, StringFormat='${0}'}" Foreground="Red" FontSize="10" />
+            </StackPanel>
             <Button Opacity="0" Command="{Binding BankerBetCommand}" Grid.Row="1" Grid.ColumnSpan="3" />
 
-            <TextBlock Text="Player" Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Red" FontSize="40" />
+            <TextBlock Text="PLAYER" Grid.Row="2" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Yellow" FontSize="40" />
             <Image Source="{core:DictionaryLookup {Binding PlayerBetChips}, ResourceKey=ChipImages}"
                    RenderOptions.BitmapScalingMode="HighQuality" Width="30" Grid.Row="2" Grid.ColumnSpan="3"/>
-            <TextBlock Text="{Binding PlayerBet, StringFormat='${0}'}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="10" Grid.Row="2"/>
+            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="2">
+                <TextBlock Text="{Binding PlayerBet, StringFormat='${0}'}" Foreground="White" FontSize="10"/>
+                <TextBlock Text="{Binding PlayerPayout, StringFormat='${0}'}" Foreground="Red" FontSize="10"/>
+            </StackPanel>
             <Button Opacity="0" Command="{Binding PlayerBetCommand}" Grid.Row="2" Grid.ColumnSpan="3" />
         </Grid>
 
-        <TextBlock Text="{Binding PlayerBankRoll, StringFormat='${0}'}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White"/>
-        <Button Content="Deal" Command="{Binding DealCommand}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TextBlock Text="{Binding PlayerBankRoll, StringFormat='${0}'}" Foreground="White"/>
+            <TextBlock Text="{Binding PlayerTotalPayout, StringFormat='${0}'}" Foreground="Red"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <Button Content="Deal" Command="{Binding DealCommand}" Margin="5" Padding="10,0" />
+            <Button Content="Clear" Command="{Binding ClearCommand}" Margin="5" Padding="10,0"/>
+        </StackPanel>
     </Grid>
 </UserControl>

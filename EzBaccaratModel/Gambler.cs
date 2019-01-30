@@ -1,6 +1,8 @@
-﻿namespace EzBaccarat.Model
+﻿using System;
+
+namespace EzBaccarat.Model
 {
-    public class Player
+    public class Gambler
     {
         public int Money { get; private set; }
 
@@ -16,6 +18,11 @@
         public void Put(int amount)
         {
             this.Money += amount;
+        }
+
+        public void Put(object totalWin)
+        {
+            throw new NotImplementedException();
         }
     }
 }

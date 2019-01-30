@@ -13,8 +13,7 @@ namespace EzBaccarat
     class TableViewModel : INotifyPropertyChanged
     {
         private EzBaccaratTable table = new Model.EzBaccaratTable();
-        private Player player = new Player();
-        private EzBaccaratPlayerBet bet = new EzBaccaratPlayerBet();
+        private Gambler player = new Gambler();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -28,7 +27,7 @@ namespace EzBaccarat
 
         public bool PlayerWin { get { return table.Dealer.IsPlayerWin || table.Dealer.IsTie; } }
 
-        public bool BankerWin { get { return table.Dealer.IsBankerWin || table.Dealer.IsTie || table.Dealer.IsPush; } }
+        public bool BankerWin { get { return table.Dealer.IsBankerWin || table.Dealer.IsTie || table.Dealer.IsBankerPush; } }
 
         public int PlayerBankRoll { get { return player.Money; } }
 
@@ -59,7 +58,7 @@ namespace EzBaccarat
 
         public TableViewModel()
         {
-            table.InitializeGame();
+            table.GoNextState();
 
             player.Put(1000);
 
@@ -123,24 +122,34 @@ namespace EzBaccarat
 
         private void OnDealCommand()
         {
-            bet.Player = player;
+            if (table.CurrentState != EzBaccaratTableState.WaitingForBets)
+            {
+                return;
+            }
 
-            bet.Panda8Bet = this.PandaBet;
-            bet.TieBet = this.TieBet;
-            bet.Dragon7Bet = this.DragonBet;
-            bet.BankerBet = this.BankerBet;
-            bet.PlayerBet = this.PlayerBet;
+            var bet = new EzBaccaratBet();
+            bet.Gambler = player;
+            bet.Panda = this.PandaBet;
+            bet.Tie = this.TieBet;
+            bet.Dragon = this.DragonBet;
+            bet.Banker = this.BankerBet;
+            bet.Player = this.PlayerBet;
 
-            table.AddBet(bet);
-            table.PlayRound();
+            table.Bets.Add(bet);
+            table.GoNextState();
 
-            bet = new EzBaccaratPlayerBet();
+            foreach(var payout in this.table.Payouts)
+            {
+                payout.Bet.Gambler.Put(payout.TotalWin);
+            }
 
             this.PandaBet = 0;
             this.TieBet = 0;
             this.DragonBet = 0;
             this.BankerBet = 0;
             this.PlayerBet = 0;
+
+            table.GoNextState();
 
             InvokePropertyChanged(string.Empty);
         }

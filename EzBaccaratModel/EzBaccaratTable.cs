@@ -17,9 +17,16 @@ namespace EzBaccarat.Model
         private List<Card>[] cardSets = { new List<Card>(), new List<Card>() };
         private List<Card> discardTray = new List<Card>();
 
-        private List<EzBaccaratPlayerBet> bets = new List<EzBaccaratPlayerBet>();
+        private List<EzBaccaratBet> bets = new List<EzBaccaratBet>();
+        private List<EzBaccaratPayout> payouts = new List<EzBaccaratPayout>();
+
+        public EzBaccaratTableState CurrentState { get; private set; } = EzBaccaratTableState.NotReady;
 
         public EzBaccaratDealer Dealer { get; private set; }
+
+        public IList<EzBaccaratBet> Bets { get { return bets; } }
+        public IList<EzBaccaratPayout> Payouts { get { return payouts; } }
+
 
         public EzBaccaratTable()
         {
@@ -48,12 +55,33 @@ namespace EzBaccarat.Model
             currentCardSet = 0;
         }
 
-        public void AddBet(EzBaccaratPlayerBet bet)
+        public void GoNextState()
         {
-            bets.Add(bet);
+            if (this.CurrentState == EzBaccaratTableState.NotReady)
+            {
+                this.InitializeGame();
+                this.CurrentState = EzBaccaratTableState.WaitingForBets;
+            }
+            else if (CurrentState == EzBaccaratTableState.WaitingForBets)
+            {
+                if (!this.Deal())
+                    this.CurrentState = EzBaccaratTableState.GameFinished;
+                else
+                    this.CurrentState = EzBaccaratTableState.PayoutReady;
+            }
+            else if (CurrentState == EzBaccaratTableState.PayoutReady)
+            {
+                this.EndRound();
+                this.CurrentState = EzBaccaratTableState.WaitingForBets;
+            }
+            else if (CurrentState == EzBaccaratTableState.GameFinished)
+            {
+                this.FinalizeGame();
+                this.CurrentState = EzBaccaratTableState.NotReady;
+            }
         }
 
-        public void InitializeGame()
+        private void InitializeGame()
         {
             this.discardTray.Clear();
 
@@ -89,68 +117,89 @@ namespace EzBaccarat.Model
 
             // Create a dealer
             this.Dealer = new EzBaccaratDealer(shoe);
+
+            this.bets.Clear();
+            this.payouts.Clear();
         }
 
-        public void FinalizeGame()
+        /// <summary>
+        /// With bets in place, draws and calculates payout based on results.
+        /// </summary>
+        /// <returns></returns>
+        private bool Deal()
         {
-            shuffler.Shuffle(cardSets[currentCardSet]);
-            currentCardSet = (currentCardSet + 1) % cardSets.Length;
-            discardTray.Clear();
-            this.Dealer = null;
-        }
+            Debug.Assert(this.payouts.Count == 0);
 
-        public bool PlayRound()
-        {
             if (!this.Dealer.Deal())
                 return false;
 
             foreach (var bet in bets)
             {
+                var payout = new EzBaccaratPayout(bet);
+                payouts.Add(payout);
+
                 if (this.Dealer.IsTie)
                 {
                     System.Diagnostics.Debug.Assert(!this.Dealer.IsBankerWin && !this.Dealer.IsPlayerWin);
+                    payout.Bet.Tie = bet.Tie;
+                    payout.Tie = bet.Tie * 8;
 
-                    bet.Player.Put(bet.TieBet * 8);
-                    bet.Player.Put(bet.BankerBet);
-                    bet.Player.Put(bet.PlayerBet);
+                    payout.Bet.Banker = bet.Banker;
+                    payout.Bet.Player = bet.Player;
                 }
                 else
                 {
                     if (this.Dealer.IsBankerWin)
                     {
                         System.Diagnostics.Debug.Assert(!this.Dealer.IsPlayerWin);
-                        bet.Player.Put(bet.BankerBet * 2);
+                        payout.Bet.Banker = bet.Banker;
+                        payout.Banker = bet.Banker * 2;
                     }
 
                     if (this.Dealer.IsPlayerWin)
                     {
                         System.Diagnostics.Debug.Assert(!this.Dealer.IsBankerWin);
-                        bet.Player.Put(bet.PlayerBet * 2);
+                        payout.Bet.Player = bet.Player;
+                        payout.Player = bet.Player * 2;
                     }
                 }
 
-                if (this.Dealer.IsPush)
+                if (this.Dealer.IsBankerPush)
                 {
-                    bet.Player.Put(bet.BankerBet);
+                    payout.Bet.Banker = bet.Banker;
                 }
 
-                if (this.Dealer.IsDragon7)
+                if (this.Dealer.IsDragon)
                 {
-                    bet.Player.Put(bet.Dragon7Bet * 40);
+                    payout.Bet.Dragon = bet.Dragon;
+                    payout.Dragon = bet.Dragon * 40;
                 }
 
-                if (this.Dealer.IsPanda8)
+                if (this.Dealer.IsPanda)
                 {
-                    bet.Player.Put(bet.Dragon7Bet * 25);
+                    payout.Bet.Panda = bet.Panda;
+                    payout.Panda = bet.Panda * 25;
                 }
             }
 
+            return true;
+        }
+
+        private void EndRound()
+        {
+            bets.Clear();
+            payouts.Clear();
+
             discardTray.AddRange(this.Dealer.PlayerHand);
             discardTray.AddRange(this.Dealer.BankerHand);
+        }
 
-            bets.Clear();
-
-            return true;
+        private void FinalizeGame()
+        {
+            shuffler.Shuffle(cardSets[currentCardSet]);
+            currentCardSet = (currentCardSet + 1) % cardSets.Length;
+            discardTray.Clear();
+            this.Dealer = null;
         }
     }
 }
