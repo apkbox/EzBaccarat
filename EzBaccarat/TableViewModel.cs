@@ -149,6 +149,9 @@ namespace EzBaccarat
         {
             if (table.CurrentState != EzBaccaratTableState.WaitingForBets)
             {
+                this.bigRoadScoreboard.Clear();
+                this.bigRoadItems.Clear();
+                table.GoNextState();
                 return;
             }
 

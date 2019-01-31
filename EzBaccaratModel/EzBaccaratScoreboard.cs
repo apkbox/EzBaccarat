@@ -40,12 +40,29 @@ namespace EzBaccarat.Model
 
         public EzBaccaratScoreboardBigRoad()
         {
-            plate.Initialize();
+            Clear();
+        }
 
+        public void Clear()
+        {
+            for (var x = 0; x < plate.GetLength(0); x++)
+            {
+                for (var y = 0; y < plate.GetLength(1); y++)
+                {
+                    plate[x, y] = null;
+                }
+            }
+
+            Items.Clear();
             for (var i = 0; i < plate.Length; i++)
             {
                 Items.Add(null);
             }
+
+            x = 0;
+            y = 0;
+            unattributedTies = 0;
+            currentColumn = 0;
         }
 
         public IList<EzBaccaratScoreItem> Items { get; } = new List<EzBaccaratScoreItem>();
@@ -96,6 +113,7 @@ namespace EzBaccarat.Model
                         y = 0;
                     }
 
+                    // TODO: Check if x is out of bounds and scroll whole plate left.
                     plate[x, y] = item;
 
                     if (unattributedTies > 0)
