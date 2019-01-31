@@ -2,6 +2,7 @@
 using Prism.Commands;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,6 +15,8 @@ namespace EzBaccarat
     {
         private EzBaccaratTable table = new Model.EzBaccaratTable();
         private Gambler player = new Gambler();
+
+        private EzBaccaratScoreboardBigRoad bigRoadScoreboard = new EzBaccaratScoreboardBigRoad();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -49,6 +52,16 @@ namespace EzBaccarat
 
         public string BankerBetChips { get { return GetChipImage(this.BankerBet); } }
         public string PlayerBetChips { get { return GetChipImage(this.PlayerBet); } }
+
+        private ObservableCollection<EzBaccaratScoreItem> bigRoadItems = new ObservableCollection<EzBaccaratScoreItem>();
+
+        public IList<EzBaccaratScoreItem> BigRoadScoreboard
+        {
+            get
+            {
+                return bigRoadItems;
+            }
+        }
 
         private string GetChipImage(int bet)
         {
@@ -155,20 +168,35 @@ namespace EzBaccarat
                 ++this.Panda8Count;
 
             if (this.table.Dealer.IsTie)
+            {
                 ++this.TieCount;
+                bigRoadScoreboard.AddScore(new EzBaccaratScoreItem() { WinningHand = EzBaccaratWinningHand.None, IsTie = true });
+            }
 
             if (this.table.Dealer.IsDragon)
                 ++this.Dragon7Count;
 
             if (this.table.Dealer.IsPlayerWin)
+            {
                 ++this.PlayerCount;
+                bigRoadScoreboard.AddScore(new EzBaccaratScoreItem() { WinningHand = EzBaccaratWinningHand.Player });
+            }
 
             if (this.table.Dealer.IsBankerWin)
+            {
                 ++this.BankerCount;
+                bigRoadScoreboard.AddScore(new EzBaccaratScoreItem() { WinningHand = EzBaccaratWinningHand.Banker });
+            }
+
+            this.bigRoadItems.Clear();
+            for (var i = 0; i < bigRoadScoreboard.Items.Count; i++)
+            {
+                this.bigRoadItems.Add(bigRoadScoreboard.Items[i]);
+            }
 
             UpdateDragon7Count();
 
-            foreach(var payout in this.table.Payouts)
+            foreach (var payout in this.table.Payouts)
             {
                 payout.Bet.Gambler.Put(payout.TotalWin);
             }

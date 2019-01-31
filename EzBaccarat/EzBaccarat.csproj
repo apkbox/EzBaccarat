@@ -200,5 +200,9 @@
     <Resource Include="Images\dragon7.png" />
     <Resource Include="Images\panda8.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\BankerBead.png" />
+    <Resource Include="Images\PlayerBead.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

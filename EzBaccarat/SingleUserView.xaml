@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:EzBaccarat"
              xmlns:core="clr-namespace:Shadows.Core"
              xmlns:conv="clr-namespace:Shadows.Core.Converters"
+             xmlns:model="clr-namespace:EzBaccarat.Model;assembly=EzBaccaratModel"
              xmlns:collections="clr-namespace:System.Collections;assembly=mscorlib"
              mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800"
@@ -86,6 +87,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -230,6 +232,39 @@
             <TextBlock Text="{Binding PlayerBankRoll, StringFormat='${0}'}" Foreground="White"/>
             <TextBlock Text="{Binding PlayerTotalPayout, StringFormat='${0}'}" Foreground="Red"/>
         </StackPanel>
+
+        <ItemsControl Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" HorizontalAlignment="Center" VerticalAlignment="Top"
+                      ItemsSource="{Binding BigRoadScoreboard}"
+                      Background="White">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="5" Columns="38"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderBrush="Gold" BorderThickness="1">
+                        <Grid>
+                            <Image x:Name="Bead" Source="" Width="20" Margin="2"/>
+                            <TextBlock x:Name="TieMarker" Text="T" FontSize="20"
+                                       FontWeight="ExtraBold" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                       Visibility="Hidden"/>
+                        </Grid>
+                    </Border>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding WinningHand}" Value="{x:Static model:EzBaccaratWinningHand.Player}">
+                            <Setter TargetName="Bead" Property="Source" Value="Images/PlayerBead.png"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding WinningHand}" Value="{x:Static model:EzBaccaratWinningHand.Banker}">
+                            <Setter TargetName="Bead" Property="Source" Value="Images/BankerBead.png"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding IsTie}" Value="true">
+                            <Setter TargetName="TieMarker" Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top">
             <Button Content="Deal" Command="{Binding DealCommand}" Margin="5" Padding="10,0" />
