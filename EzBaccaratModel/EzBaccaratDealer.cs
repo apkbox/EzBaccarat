@@ -12,9 +12,6 @@ namespace EzBaccarat.Model
 
         private Shoe shoe;
 
-        private bool noMoreDeals = false;
-        private bool seenCutCard = false;
-
         public List<Card> BankerHand { get; } = new List<Card>();
 
         public List<Card> PlayerHand { get; } = new List<Card>();
@@ -37,6 +34,8 @@ namespace EzBaccarat.Model
 
         public bool IsNatural { get; private set; }
 
+        public bool LastDeal { get; private set; } = false;
+
         public EzBaccaratDealer(Shoe shoe)
         {
             this.shoe = shoe;
@@ -44,11 +43,8 @@ namespace EzBaccarat.Model
 
         public bool Deal()
         {
-            if (noMoreDeals)
+            if (LastDeal)
                 return false;
-
-            if (seenCutCard)
-                noMoreDeals = true;
 
             PlayerHand.Clear();
             BankerHand.Clear();
@@ -159,7 +155,7 @@ namespace EzBaccarat.Model
             var card = shoe.Draw();
             if (card.Suit == CardSuit.CutCard)
             {
-                this.seenCutCard = true;
+                this.LastDeal = true;
                 card = shoe.Draw();
             }
 

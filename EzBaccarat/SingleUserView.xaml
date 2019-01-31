@@ -93,8 +93,20 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
+        <StackPanel>
+            <TextBlock Text="{Binding Shoe}"/>
+            <TextBlock Text="{Binding Panda8Count, StringFormat='Panda 8: {0}'}"/>
+            <TextBlock Text="{Binding TieCount, StringFormat='Tie: {0}'}"/>
+            <TextBlock Text="{Binding Dragon7Count, StringFormat='Dragon 7: {0}'}"/>
+            <TextBlock Text="{Binding PlayerCount, StringFormat='Player: {0}'}"/>
+            <TextBlock Text="{Binding BankerCount, StringFormat='Banker: {0}'}"/>
+            <TextBlock Text="{Binding Dragon7Count1, StringFormat='System 1: {0}'}"/>
+            <TextBlock Text="{Binding Dragon7Count2, StringFormat='System 2: {0}'}"/>
+        </StackPanel>
+
+        <TextBlock Text="{Binding PlayerHandScore}" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="White" FontSize="15" Grid.Column="0"/>
         <TextBlock Text="PLAYER" HorizontalAlignment="Right" VerticalAlignment="Top" Foreground="Yellow" FontSize="50"/>
-        <Grid x:Name="PlayerHand" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,0,100">
+        <Grid x:Name="PlayerHand" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,0,100">
             <Grid.RenderTransform>
                 <TransformGroup>
                     <TranslateTransform Y="{Binding PlayerWin, Converter={StaticResource WinToCardOffsetConverter}}"/>
@@ -123,8 +135,9 @@
                    RenderOptions.BitmapScalingMode="HighQuality" Width="60" Grid.Column="4"/>
         </Grid>
 
+        <TextBlock Text="{Binding BankerHandScore}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="15" Grid.Column="2"/>
         <TextBlock Text="BANKER" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Red" FontSize="50" Grid.Column="2"/>
-        <Grid x:Name="BankerHand" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="2" Margin="0,10,0,100">
+        <Grid x:Name="BankerHand" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Column="2" Margin="0,20,0,100">
             <Grid.RenderTransform>
                 <TransformGroup>
                     <TranslateTransform Y="{Binding BankerWin, Converter={StaticResource WinToCardOffsetConverter}}"/>

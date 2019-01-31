@@ -17,6 +17,9 @@ namespace EzBaccarat
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        public int PlayerHandScore { get { return table.Dealer.PlayerPoints; } }
+        public int BankerHandScore { get { return table.Dealer.BankerPoints; } }
+
         public string PlayerHand1 { get { return table.Dealer.PlayerHand.Count > 0 ? table.Dealer.PlayerHand[0].CardCode : string.Empty; } }
         public string PlayerHand2 { get { return table.Dealer.PlayerHand.Count > 0 ? table.Dealer.PlayerHand[1].CardCode : string.Empty; } }
         public string PlayerHand3 { get { return table.Dealer.PlayerHand.Count > 2 ? table.Dealer.PlayerHand[2].CardCode : string.Empty; } }
@@ -26,8 +29,17 @@ namespace EzBaccarat
         public string BankerHand3 { get { return table.Dealer.BankerHand.Count > 2 ? table.Dealer.BankerHand[2].CardCode : string.Empty; } }
 
         public bool PlayerWin { get { return table.Dealer.IsPlayerWin || table.Dealer.IsTie; } }
-
         public bool BankerWin { get { return table.Dealer.IsBankerWin || table.Dealer.IsTie || table.Dealer.IsBankerPush; } }
+
+        public int Shoe { get; private set; }
+        public double Dragon7Count1 { get; private set; }
+        public int Dragon7Count2 { get; private set; }
+
+        public int Panda8Count { get; private set; }
+        public int TieCount { get; private set; }
+        public int Dragon7Count { get; private set; }
+        public int PlayerCount { get; private set; }
+        public int BankerCount { get; private set; }
 
         public int PlayerBankRoll { get { return player.Money; } }
 
@@ -138,6 +150,24 @@ namespace EzBaccarat
             table.Bets.Add(bet);
             table.GoNextState();
 
+            ++this.Shoe;
+            if (this.table.Dealer.IsPanda)
+                ++this.Panda8Count;
+
+            if (this.table.Dealer.IsTie)
+                ++this.TieCount;
+
+            if (this.table.Dealer.IsDragon)
+                ++this.Dragon7Count;
+
+            if (this.table.Dealer.IsPlayerWin)
+                ++this.PlayerCount;
+
+            if (this.table.Dealer.IsBankerWin)
+                ++this.BankerCount;
+
+            UpdateDragon7Count();
+
             foreach(var payout in this.table.Payouts)
             {
                 payout.Bet.Gambler.Put(payout.TotalWin);
@@ -152,6 +182,61 @@ namespace EzBaccarat
             table.GoNextState();
 
             InvokePropertyChanged(string.Empty);
+        }
+
+        private void UpdateDragon7Count()
+        {
+            foreach (var c in table.Dealer.PlayerHand)
+            {
+                this.Dragon7Count1 += GetDragon7Weight(c);
+
+                if (c.RankValue > 3 && c.RankValue < 8)
+                    Dragon7Count2 -= 1;
+                else if (c.RankValue == 8 || c.RankValue == 9)
+                    Dragon7Count2 += 2;
+            }
+
+            foreach (var c in table.Dealer.BankerHand)
+            {
+                this.Dragon7Count1 += GetDragon7Weight(c);
+
+                if (c.RankValue > 3 && c.RankValue < 8)
+                    Dragon7Count2 -= 1;
+                else if (c.RankValue == 8 || c.RankValue == 9)
+                    Dragon7Count2 += 2;
+            }
+
+            InvokePropertyChanged("Dragon7Count1");
+            InvokePropertyChanged("Dragon7Count2");
+        }
+
+        private double GetDragon7Weight(Card c)
+        {
+            switch (c.RankValue)
+            {
+                case 1:
+                    return -0.5;
+                case 2:
+                    return -0.9;
+                case 3:
+                    return -1.1;
+                case 4:
+                    return -2.7;
+                case 5:
+                    return -2.7;
+                case 6:
+                    return -3.3;
+                case 7:
+                    return -3.6;
+                case 8:
+                    return 5.4;
+                case 9:
+                    return 4.8;
+                case 10:
+                    return 0.9;
+            }
+
+            return 0;
         }
 
         public void InvokePropertyChanged([CallerMemberName] string name = "")

@@ -72,7 +72,10 @@ namespace EzBaccarat.Model
             else if (CurrentState == EzBaccaratTableState.PayoutReady)
             {
                 this.EndRound();
-                this.CurrentState = EzBaccaratTableState.WaitingForBets;
+                if (this.Dealer.LastDeal)
+                    this.CurrentState = EzBaccaratTableState.GameFinished;
+                else
+                    this.CurrentState = EzBaccaratTableState.WaitingForBets;
             }
             else if (CurrentState == EzBaccaratTableState.GameFinished)
             {
@@ -153,14 +156,14 @@ namespace EzBaccarat.Model
                     {
                         System.Diagnostics.Debug.Assert(!this.Dealer.IsPlayerWin);
                         payout.Bet.Banker = bet.Banker;
-                        payout.Banker = bet.Banker * 2;
+                        payout.Banker = bet.Banker;
                     }
 
                     if (this.Dealer.IsPlayerWin)
                     {
                         System.Diagnostics.Debug.Assert(!this.Dealer.IsBankerWin);
                         payout.Bet.Player = bet.Player;
-                        payout.Player = bet.Player * 2;
+                        payout.Player = bet.Player;
                     }
                 }
 

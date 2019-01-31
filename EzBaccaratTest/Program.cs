@@ -14,7 +14,10 @@ namespace EzBaccaratTest
         {
             var table = new EzBaccaratTable();
 
-            for (var z = 0; z < 5; ++z)
+            var gambler = new Gambler(true);
+            gambler.Put(1000);
+
+            for (var z = 0; z < 1000; ++z)
             {
                 Debug.Assert(table.CurrentState == EzBaccaratTableState.NotReady);
 
@@ -22,10 +25,12 @@ namespace EzBaccaratTest
                 Debug.Assert(table.CurrentState == EzBaccaratTableState.WaitingForBets);
 
                 EzBaccaratBet bet = new EzBaccaratBet();
-                bet.Gambler = new Gambler();
-                bet.Gambler.Put(4000);
+                bet.Gambler = gambler;
+                // bet.Gambler = new Gambler();
+                // bet.Gambler.Put(1000);
 
-                bool betLost = false;
+                int state = 0;
+                bool betLost = true;
                 int lastBet = 25;
                 int maxBet = 0;
                 int rounds = 0;
@@ -33,6 +38,7 @@ namespace EzBaccaratTest
                 int bankerWins = 0;
                 int playerWins = 0;
                 int ties = 0;
+                bool bankerSide = false;
 
                 while (true)
                 {
@@ -40,34 +46,60 @@ namespace EzBaccaratTest
 
                     if (betLost)
                     {
-                        lastBet *= 2;
-                        betLost = false;
+                        state = 0;
+                        lastBet = 25;
+                        bankerSide = !bankerSide;
                     }
+                    else
+                    {
+                        switch(state)
+                        {
+                            case 0:
+                                lastBet = 75;
+                                state = 1;
+                                break;
+                            case 1:
+                                lastBet = 50;
+                                state = 2;
+                                break;
+                            case 2:
+                                lastBet = 100;
+                                state = 0;
+                                break;
+                        }
+                    }
+
+                    betLost = false;
 
                     lastBet = bet.Gambler.TryGet(lastBet);
                     maxBet = Math.Max(maxBet, lastBet);
-                    bet.Banker = lastBet;
-                    bet.Dragon = bet.Gambler.TryGet(5);
-                    bet.Panda = bet.Gambler.TryGet(5);
+                    if (bankerSide)
+                    {
+                        bet.Banker = lastBet;
+                        bet.Player = 0;
+                    }
+                    else
+                    {
+                        bet.Banker = 0;
+                        bet.Player = lastBet;
+                    }
+
                     table.Bets.Add(bet);
 
                     table.GoNextState();
-                    if (table.CurrentState == EzBaccaratTableState.GameFinished)
-                        break;
 
                     ++rounds;
 
                     string outcome = "?????";
-                    if (table.Dealer.IsTie)
-                    {
-                        outcome = " TIE ";
-                        ++ties;
-                    }
-
                     if (table.Dealer.IsPlayerWin)
                     {
                         outcome = "<==  ";
                         ++playerWins;
+                    }
+                    else
+                    {
+                        if (!bankerSide)
+                            betLost = true;
                     }
 
                     if (table.Dealer.IsBankerWin)
@@ -77,7 +109,16 @@ namespace EzBaccaratTest
                     }
                     else
                     {
-                        betLost = true;
+                        if (bankerSide)
+                            betLost = true;
+                    }
+
+                    if (table.Dealer.IsTie)
+                    {
+                        outcome = " TIE ";
+                        ++ties;
+
+                        betLost = false;
                     }
 
                     if (table.Dealer.IsDragon)
@@ -95,16 +136,22 @@ namespace EzBaccaratTest
                         payout.Bet.Gambler.Put(payout.TotalWin);
                     }
 
-                    Console.WriteLine("Player: {0} ({1})    {2}    Banker: {3} ({4})", PrintHand(table.Dealer.PlayerHand), table.Dealer.PlayerPoints,
-                        outcome, PrintHand(table.Dealer.BankerHand), table.Dealer.BankerPoints);
+                    if (true)
+                    {
+                        Console.WriteLine("Player: {0} ({1})    {2}    Banker: {3} ({4})     Balance: {5} ({6} - {7})",
+                            PrintHand(table.Dealer.PlayerHand), table.Dealer.PlayerPoints,
+                            outcome, PrintHand(table.Dealer.BankerHand), table.Dealer.BankerPoints, bet.Gambler.Money, lastBet, bankerSide ? "B" : "P");
+                    }
 
-                    /*
-                    if (bet.Player.Money <= 0)
+                    table.GoNextState();
+                    if (table.CurrentState == EzBaccaratTableState.GameFinished)
+                        break;
+
+                    if (bet.Gambler.Money <= 0 && false)
                     {
                         Console.WriteLine("BANKRUPT!!!!!");
-                        break;
+                        // goto end;
                     }
-                    */
                 }
 
                 table.GoNextState();
@@ -114,6 +161,7 @@ namespace EzBaccaratTest
                     bankerWins, (double)bankerWins / rounds, ties, (double)ties / rounds);
                 Console.WriteLine("Gamble money: {0}, Max bet: {1}", bet.Gambler.Money, maxBet);
             }
+        end:;
         }
 
         private static string PrintHand(List<Card> cards)

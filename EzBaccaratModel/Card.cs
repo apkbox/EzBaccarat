@@ -16,6 +16,8 @@
         public CardSuit Suit { get => suit; }
         public CardRank Rank { get => rank; }
 
+        public int RankValue { get => (int)rank; }
+
         public string CardCode
         {
             get
