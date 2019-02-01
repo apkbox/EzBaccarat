@@ -47,9 +47,11 @@
     <Compile Include="EzBaccaratBet.cs" />
     <Compile Include="EzBaccaratDealer.cs" />
     <Compile Include="EzBaccaratPayout.cs" />
-    <Compile Include="EzBaccaratScoreboard.cs" />
+    <Compile Include="EzBaccaratScoreboardBigRoad.cs" />
+    <Compile Include="EzBaccaratScoreItem.cs" />
     <Compile Include="EzBaccaratTable.cs" />
     <Compile Include="EzBaccaratTableState.cs" />
+    <Compile Include="EzBaccaratWinningHand.cs" />
     <Compile Include="FisherYatesShuffler.cs" />
     <Compile Include="French52Deck.cs" />
     <Compile Include="Gambler.cs" />

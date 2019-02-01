@@ -14,7 +14,7 @@ namespace EzBaccarat.Model
 
         public void Shuffle(List<Card> list)
         {
-            for (var i = 0; i < 1; i++)
+            for (var i = 0; i < 33; i++)
             {
                 ShuffleRound(list);
             }

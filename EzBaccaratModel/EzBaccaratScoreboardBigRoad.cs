@@ -1,31 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace EzBaccarat.Model
 {
-    public enum EzBaccaratWinningHand
-    {
-        None,
-        Player,
-        Banker
-    }
-
-    public class EzBaccaratScoreItem
-    {
-        public EzBaccaratWinningHand WinningHand { get; set; }
-
-        public bool IsPlayerNatural { get; set; }
-        public bool IsBankerNatural { get; set; }
-        public bool IsNatural { get { return IsPlayerNatural || IsBankerNatural; } }
-        public bool IsTie { get; set; }
-
-        public bool IsDragon { get; set; }
-        public bool IsPanda { get; set; }
-    }
-
     public class EzBaccaratScoreboardBigRoad
     {
         private const int Columns = 38;
@@ -114,6 +90,26 @@ namespace EzBaccarat.Model
                     }
 
                     // TODO: Check if x is out of bounds and scroll whole plate left.
+                    if (x >= Columns)
+                    {
+                        for (var i = 0; i < this.plate.GetLength(0) - 1; i++)
+                        {
+                            for (var j = 0; j < this.plate.GetLength(1); j++)
+                            {
+                                this.plate[i, j] = this.plate[i + 1, j];
+                            }
+                        }
+
+                        var lastCol = this.plate.GetLength(0) - 1;
+                        for (var j = 0; j < this.plate.GetLength(1); j++)
+                        {
+                            this.plate[lastCol, j] = null;
+                        }
+
+                        x -= 1;
+                        currentColumn -= 1;
+                    }
+
                     plate[x, y] = item;
 
                     if (unattributedTies > 0)

@@ -80,6 +80,9 @@
             <ImageSource x:Key="QH">Images/cards/QH.png</ImageSource>
             <ImageSource x:Key="KH">Images/cards/KH.png</ImageSource>
         </collections:Hashtable>
+
+        <ImageSource x:Key="BigRoadPlayerBead">Images/PlayerBead.png</ImageSource>
+        <ImageSource x:Key="BigRoadBankerBead">Images/BankerBead.png</ImageSource>
     </UserControl.Resources>
 
     <Grid Background="#FF0B4432" >
@@ -245,18 +248,18 @@
                 <DataTemplate>
                     <Border BorderBrush="Gold" BorderThickness="1">
                         <Grid>
-                            <Image x:Name="Bead" Source="" Width="20" Margin="2"/>
+                            <Image x:Name="Bead" Source="{x:Null}" Width="20" Margin="2"/>
                             <TextBlock x:Name="TieMarker" Text="T" FontSize="20"
-                                       FontWeight="ExtraBold" Foreground="Red" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                       FontWeight="ExtraBold" Foreground="LightGreen" VerticalAlignment="Center" HorizontalAlignment="Center"
                                        Visibility="Hidden"/>
                         </Grid>
                     </Border>
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding WinningHand}" Value="{x:Static model:EzBaccaratWinningHand.Player}">
-                            <Setter TargetName="Bead" Property="Source" Value="Images/PlayerBead.png"/>
+                            <Setter TargetName="Bead" Property="Source" Value="{StaticResource BigRoadPlayerBead}"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding WinningHand}" Value="{x:Static model:EzBaccaratWinningHand.Banker}">
-                            <Setter TargetName="Bead" Property="Source" Value="Images/BankerBead.png"/>
+                            <Setter TargetName="Bead" Property="Source" Value="{StaticResource BigRoadBankerBead}"/>
                         </DataTrigger>
                         <DataTrigger Binding="{Binding IsTie}" Value="true">
                             <Setter TargetName="TieMarker" Property="Visibility" Value="Visible"/>
